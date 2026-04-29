@@ -1,16 +1,16 @@
 locals {
   management_groups = {
-    root = {
-      display_name = var.org_name
-      parent_key   = null
+    contoso = {
+      display_name = "Contoso"
+      parent_key   = null # anchors to Tenant Root Group
     }
     platform = {
       display_name = "Platform"
-      parent_key   = "root"
+      parent_key   = "contoso"
     }
     workloads = {
       display_name = "Workloads"
-      parent_key   = "root"
+      parent_key   = "contoso"
     }
     connectivity = {
       display_name = "Connectivity"
