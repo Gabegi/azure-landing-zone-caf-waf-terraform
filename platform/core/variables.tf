@@ -1,5 +1,5 @@
 variable "org_name" {
-  description = "Short organisation name used to prefix all management group display names."
+  description = "Short organisation name used as the root management group display name."
   type        = string
 }
 
@@ -14,7 +14,10 @@ variable "subscription_id" {
 }
 
 variable "subscription_associations" {
-  description = "Map of management group key -> list of subscription IDs to associate."
-  type        = map(list(string))
-  default     = {}
+  description = "Map of unique key -> { mg_key, sub_id } pairs to associate subscriptions to management groups."
+  type = map(object({
+    mg_key = string
+    sub_id = string
+  }))
+  default = {}
 }
