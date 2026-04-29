@@ -1,14 +1,7 @@
 name: platform-core
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "platform/core/**"
-  pull_request:
-    branches: [main]
-    paths:
-      - "platform/core/**"
+  workflow_dispatch:
 
 jobs:
   deploy:
