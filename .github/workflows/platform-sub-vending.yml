@@ -1,39 +1,69 @@
 name: platform-sub-vending
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "platform/sub-vending/subscriptions/*.tfvars"
+  pull_request:
+    branches: [main]
+    paths:
+      - "platform/sub-vending/subscriptions/*.tfvars"
 
 jobs:
+  detect:
+    runs-on: [self-hosted]
+    outputs:
+      files: ${{ steps.changed.outputs.files }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Get changed tfvars files
+        id: changed
+        run: |
+          FILES=$(git diff --name-only HEAD~1 HEAD -- 'platform/sub-vending/subscriptions/*.tfvars' | jq -R -s -c 'split("\n")[:-1]')
+          echo "files=$FILES" >> $GITHUB_OUTPUT
+
   deploy:
+    needs: detect
     runs-on: [self-hosted]
     environment: production
+    if: ${{ needs.detect.outputs.files != '[]' }}
+    strategy:
+      matrix:
+        file: ${{ fromJson(needs.detect.outputs.files) }}
 
     env:
-      ARM_USE_MSI:     true
-      ARM_TENANT_ID:   ${{ secrets.AZURE_TENANT_ID }}
+      ARM_USE_MSI:         true
+      ARM_TENANT_ID:       ${{ secrets.AZURE_TENANT_ID }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      TF_IN_AUTOMATION: true
+      TF_IN_AUTOMATION:    true
 
     defaults:
       run:
         working-directory: platform/sub-vending
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Azure login
-        uses: azure/login@v2
+      - uses: azure/login@v2
         with:
           auth-type: IDENTITY
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v3
+
+      - name: Get subscription name from file
+        id: name
+        run: echo "sub_name=$(basename ${{ matrix.file }} .tfvars)" >> $GITHUB_OUTPUT
 
       - name: Terraform init
-        run: terraform init -input=false
+        run: |
+          terraform init -input=false \
+            -backend-config="key=subscriptions/${{ steps.name.outputs.sub_name }}.tfstate"
 
       - name: Terraform format check
         run: terraform fmt -check -no-color
@@ -42,13 +72,11 @@ jobs:
         run: terraform validate -no-color
 
       - name: Terraform plan
-        run: terraform plan -input=false -no-color -out=tfplan
-
-      - name: Upload tfplan
-        uses: actions/upload-artifact@v4
-        with:
-          name: tfplan
-          path: platform/sub-vending/tfplan
+        run: |
+          terraform plan -input=false -no-color \
+            -var-file="${{ github.workspace }}/${{ matrix.file }}" \
+            -out=tfplan
 
       - name: Terraform apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve -no-color tfplan

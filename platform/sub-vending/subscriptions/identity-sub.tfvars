@@ -1,0 +1,5 @@
+subscription_id           = "00000000-0000-0000-0000-000000000000"
+subscription_display_name = "Identity"
+management_group_key      = "identity"
+owner_email               = "team@contoso.com"
+cost_center               = "CC-003"

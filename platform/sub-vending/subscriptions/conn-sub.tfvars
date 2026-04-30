@@ -1,0 +1,6 @@
+subscription_display_name = "Connectivity"
+billing_scope_id          = "/providers/Microsoft.Billing/billingAccounts/1234567/enrollmentAccounts/123456"
+management_group_key      = "connectivity"
+owner_email               = "platform-team@contoso.com"
+cost_center               = "CC-001"
+location                  = "eastus"

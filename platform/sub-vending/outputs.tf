@@ -1,4 +1,7 @@
-output "subscription_ids" {
-  description = "Map of subscription key -> subscription ID for consumption by platform workload folders."
-  value       = { for k, sub in azurerm_subscription.this : k => sub.id }
+output "subscription_id" {
+  value = azurerm_subscription.this.id
+}
+
+output "subscription_name" {
+  value = azurerm_subscription.this.subscription_name
 }
