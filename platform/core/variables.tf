@@ -14,12 +14,22 @@ variable "subscription_id" {
   type        = string
 }
 
-variable "subscription_associations" {
-  description = "Map of unique key -> { mg_key, sub_id, level } to associate subscriptions to management groups."
-  type = map(object({
-    mg_key = string
-    sub_id = string
-    level  = number
-  }))
-  default = {}
+variable "sub_id_connectivity" {
+  description = "Subscription ID to associate with the Connectivity management group."
+  type        = string
+}
+
+variable "sub_id_management" {
+  description = "Subscription ID to associate with the Management management group."
+  type        = string
+}
+
+variable "sub_id_identity" {
+  description = "Subscription ID to associate with the Identity management group."
+  type        = string
+}
+
+variable "sub_id_security" {
+  description = "Subscription ID to associate with the Security management group."
+  type        = string
 }
