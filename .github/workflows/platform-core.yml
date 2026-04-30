@@ -9,16 +9,13 @@ jobs:
     environment: production
 
     env:
-      ARM_USE_MSI:                 true
-      ARM_TENANT_ID:               ${{ secrets.AZURE_TENANT_ID }}
-      ARM_SUBSCRIPTION_ID:         ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      TF_IN_AUTOMATION:            true
-      TF_VAR_tenant_id:            ${{ secrets.AZURE_TENANT_ID }}
-      TF_VAR_subscription_id:      ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      TF_VAR_sub_id_connectivity:  ${{ secrets.SUB_ID_CONNECTIVITY }}
-      TF_VAR_sub_id_management:    ${{ secrets.SUB_ID_MANAGEMENT }}
-      TF_VAR_sub_id_identity:      ${{ secrets.SUB_ID_IDENTITY }}
-      TF_VAR_sub_id_security:      ${{ secrets.SUB_ID_SECURITY }}
+      ARM_USE_MSI:                     true
+      ARM_TENANT_ID:                   ${{ secrets.AZURE_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID:             ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      TF_IN_AUTOMATION:                true
+      TF_VAR_tenant_id:                ${{ secrets.AZURE_TENANT_ID }}
+      TF_VAR_subscription_id:          ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      TF_VAR_platform_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     defaults:
       run:

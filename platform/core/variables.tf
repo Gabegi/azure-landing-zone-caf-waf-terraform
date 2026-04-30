@@ -14,22 +14,7 @@ variable "subscription_id" {
   type        = string
 }
 
-variable "sub_id_connectivity" {
-  description = "Subscription ID to associate with the Connectivity management group."
-  type        = string
-}
-
-variable "sub_id_management" {
-  description = "Subscription ID to associate with the Management management group."
-  type        = string
-}
-
-variable "sub_id_identity" {
-  description = "Subscription ID to associate with the Identity management group."
-  type        = string
-}
-
-variable "sub_id_security" {
-  description = "Subscription ID to associate with the Security management group."
+variable "platform_subscription_id" {
+  description = "Subscription ID to associate with all platform management groups."
   type        = string
 }
