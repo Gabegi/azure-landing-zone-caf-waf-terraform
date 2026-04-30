@@ -1,0 +1,101 @@
+name: platform-policies
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "platform/policies/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - "platform/policies/**"
+
+jobs:
+  plan:
+    runs-on: [self-hosted]
+    environment: TENANT-PLAN
+    env:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      ARM_USE_MSI:     true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install EPAC module
+        shell: pwsh
+        run: Install-Module -Name EnterprisePolicyAsCode -Force -Scope CurrentUser
+
+      - name: Build deployment plan
+        shell: pwsh
+        run: |
+          Build-DeploymentPlans `
+            -definitionsRootFolder "platform/policies" `
+            -outputFolder "platform/policies/Output" `
+            -pacEnvironment "tenant01"
+
+      - name: Upload plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: epac-plan
+          path: platform/policies/Output
+
+  deploy-policy:
+    needs: plan
+    runs-on: [self-hosted]
+    environment: TENANT-DEPLOY-POLICY
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    env:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      ARM_USE_MSI:     true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download plan
+        uses: actions/download-artifact@v4
+        with:
+          name: epac-plan
+          path: platform/policies/Output
+
+      - name: Install EPAC module
+        shell: pwsh
+        run: Install-Module -Name EnterprisePolicyAsCode -Force -Scope CurrentUser
+
+      - name: Deploy policy plan
+        shell: pwsh
+        run: |
+          Deploy-PolicyPlan `
+            -inputFolder "platform/policies/Output" `
+            -pacEnvironment "tenant01"
+
+  deploy-roles:
+    needs: deploy-policy
+    runs-on: [self-hosted]
+    environment: TENANT-DEPLOY-ROLES
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    env:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      ARM_USE_MSI:     true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download plan
+        uses: actions/download-artifact@v4
+        with:
+          name: epac-plan
+          path: platform/policies/Output
+
+      - name: Install EPAC module
+        shell: pwsh
+        run: Install-Module -Name EnterprisePolicyAsCode -Force -Scope CurrentUser
+
+      - name: Deploy roles plan
+        shell: pwsh
+        run: |
+          Deploy-RolesPlan `
+            -inputFolder "platform/policies/Output" `
+            -pacEnvironment "tenant01"

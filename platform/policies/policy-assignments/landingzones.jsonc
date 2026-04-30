@@ -1,0 +1,23 @@
+{
+  "nodeName": "/landingzones/",
+  "scope": {
+    "tenant01": [
+      "/providers/Microsoft.Management/managementGroups/contoso-workloads"
+    ],
+    "epac-dev": [
+      "/providers/Microsoft.Management/managementGroups/contoso-dev-workloads"
+    ]
+  },
+  "assignment": {
+    "name": "lz-enforce-tags-env",
+    "displayName": "Landing Zones — Enforce environment tag",
+    "description": "Denies landing zone resources without environment tag"
+  },
+  "definitionEntry": {
+    "policyName": "contoso-enforce-tags"
+  },
+  "parameters": {
+    "tagName": "environment"
+  },
+  "enforcementMode": "Default"
+}

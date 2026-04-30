@@ -1,0 +1,25 @@
+{
+  "nodeName": "/contoso-root/",
+  "scope": {
+    "tenant01": [
+      "/providers/Microsoft.Management/managementGroups/contoso"
+    ],
+    "epac-dev": [
+      "/providers/Microsoft.Management/managementGroups/contoso-dev"
+    ]
+  },
+  "assignment": {
+    "name": "contoso-baseline",
+    "displayName": "Contoso Baseline",
+    "description": "Enforces the Contoso baseline initiative across the entire hierarchy"
+  },
+  "definitionEntry": {
+    "policySetName": "contoso-baseline"
+  },
+  "parameters": {
+    "environmentTagName": "environment",
+    "costCenterTagName": "cost-center",
+    "ownerTagName": "owner"
+  },
+  "enforcementMode": "Default"
+}

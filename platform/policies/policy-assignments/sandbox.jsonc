@@ -1,0 +1,23 @@
+{
+  "nodeName": "/sandbox/",
+  "scope": {
+    "tenant01": [
+      "/providers/Microsoft.Management/managementGroups/contoso-sandbox"
+    ],
+    "epac-dev": [
+      "/providers/Microsoft.Management/managementGroups/contoso-dev-sandbox"
+    ]
+  },
+  "assignment": {
+    "name": "sandbox-enforce-tags-env",
+    "displayName": "Sandbox — Enforce environment tag",
+    "description": "Denies sandbox resources without environment tag"
+  },
+  "definitionEntry": {
+    "policyName": "contoso-enforce-tags"
+  },
+  "parameters": {
+    "tagName": "environment"
+  },
+  "enforcementMode": "Audit" // audit only in sandbox — don't block experimentation
+}

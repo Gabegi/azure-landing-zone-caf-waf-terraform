@@ -1,0 +1,23 @@
+{
+  "nodeName": "/platform/",
+  "scope": {
+    "tenant01": [
+      "/providers/Microsoft.Management/managementGroups/contoso-platform"
+    ],
+    "epac-dev": [
+      "/providers/Microsoft.Management/managementGroups/contoso-dev-platform"
+    ]
+  },
+  "assignment": {
+    "name": "platform-enforce-tags-env",
+    "displayName": "Platform — Enforce environment tag",
+    "description": "Denies platform resources without environment tag"
+  },
+  "definitionEntry": {
+    "policyName": "contoso-enforce-tags"
+  },
+  "parameters": {
+    "tagName": "environment"
+  },
+  "enforcementMode": "Default"
+}

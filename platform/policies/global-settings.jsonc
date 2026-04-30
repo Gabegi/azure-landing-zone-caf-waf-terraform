@@ -1,0 +1,18 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/enterprise-azure-policy-as-code/main/Schemas/global-settings-schema.json",
+  "pacOwnerId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890", // replace with your own generated GUID
+  "pacEnvironments": [
+    {
+      "pacSelector": "tenant01",
+      "deploymentRootScope": "/providers/Microsoft.Management/managementGroups/contoso",
+      "managedIdentityLocation": "eastus",
+      "tenantId": "your-tenant-id"
+    },
+    {
+      "pacSelector": "epac-dev",
+      "deploymentRootScope": "/providers/Microsoft.Management/managementGroups/contoso-dev",
+      "managedIdentityLocation": "eastus",
+      "tenantId": "your-tenant-id"
+    }
+  ]
+}
