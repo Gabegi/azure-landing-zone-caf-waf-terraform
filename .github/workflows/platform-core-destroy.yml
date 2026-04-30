@@ -13,12 +13,16 @@ jobs:
     environment: production
 
     env:
-      ARM_USE_MSI:                      true
-      ARM_TENANT_ID:                    ${{ secrets.AZURE_TENANT_ID }}
-      ARM_SUBSCRIPTION_ID:              ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      TF_IN_AUTOMATION:                 true
-      TF_VAR_tenant_id:        ${{ secrets.AZURE_TENANT_ID }}
-      TF_VAR_subscription_id:  ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ARM_USE_MSI:                 true
+      ARM_TENANT_ID:               ${{ secrets.AZURE_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID:         ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      TF_IN_AUTOMATION:            true
+      TF_VAR_tenant_id:            ${{ secrets.AZURE_TENANT_ID }}
+      TF_VAR_subscription_id:      ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      TF_VAR_sub_id_connectivity:  ${{ secrets.SUB_ID_CONNECTIVITY }}
+      TF_VAR_sub_id_management:    ${{ secrets.SUB_ID_MANAGEMENT }}
+      TF_VAR_sub_id_identity:      ${{ secrets.SUB_ID_IDENTITY }}
+      TF_VAR_sub_id_security:      ${{ secrets.SUB_ID_SECURITY }}
 
     defaults:
       run:
@@ -33,10 +37,6 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Build subscription associations
-        run: |
-          echo "TF_VAR_subscription_associations={\"conn-sub\":{\"mg_key\":\"connectivity\",\"sub_id\":\"${{ secrets.SUB_ID_CONNECTIVITY }}\",\"level\":3},\"mgmt-sub\":{\"mg_key\":\"management\",\"sub_id\":\"${{ secrets.SUB_ID_MANAGEMENT }}\",\"level\":3},\"idty-sub\":{\"mg_key\":\"identity\",\"sub_id\":\"${{ secrets.SUB_ID_IDENTITY }}\",\"level\":3},\"sec-sub\":{\"mg_key\":\"security\",\"sub_id\":\"${{ secrets.SUB_ID_SECURITY }}\",\"level\":3}}" >> $GITHUB_ENV
 
       - name: Azure login
         uses: azure/login@v2
