@@ -13,9 +13,8 @@ jobs:
       ARM_TENANT_ID:           ${{ secrets.AZURE_TENANT_ID }}
       ARM_SUBSCRIPTION_ID:     ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       TF_IN_AUTOMATION:        true
-      TF_VAR_tenant_id:                 ${{ secrets.AZURE_TENANT_ID }}
-      TF_VAR_subscription_id:           ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      TF_VAR_subscription_associations: ${{ secrets.TF_SUBSCRIPTION_ASSOCIATIONS }}
+      TF_VAR_tenant_id:        ${{ secrets.AZURE_TENANT_ID }}
+      TF_VAR_subscription_id:  ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     defaults:
       run:
@@ -31,6 +30,10 @@ jobs:
           auth-type: IDENTITY
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Build subscription associations
+        run: |
+          echo "TF_VAR_subscription_associations={\"conn-sub\":{\"mg_key\":\"connectivity\",\"sub_id\":\"${{ secrets.SUB_ID_CONNECTIVITY }}\",\"level\":3},\"mgmt-sub\":{\"mg_key\":\"management\",\"sub_id\":\"${{ secrets.SUB_ID_MANAGEMENT }}\",\"level\":3},\"idty-sub\":{\"mg_key\":\"identity\",\"sub_id\":\"${{ secrets.SUB_ID_IDENTITY }}\",\"level\":3},\"sec-sub\":{\"mg_key\":\"security\",\"sub_id\":\"${{ secrets.SUB_ID_SECURITY }}\",\"level\":3}}" >> $GITHUB_ENV
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
