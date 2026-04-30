@@ -32,9 +32,6 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Debug vars
-        run: echo "Length is ${#TF_VAR_platform_subscription_id}"
-
       - name: Terraform init
         run: terraform init -input=false
 
