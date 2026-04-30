@@ -1,7 +1,8 @@
 # Level 1 - root
 resource "azurerm_management_group" "root" {
-  name         = "contoso"
-  display_name = "Contoso"
+  name                       = "contoso"
+  display_name               = "Contoso"
+  parent_management_group_id = var.root_parent_management_group_id
 }
 
 # Level 2 - children of root

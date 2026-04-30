@@ -1,3 +1,9 @@
+variable "root_parent_management_group_id" {
+  description = "Resource ID of the parent management group for the root Contoso MG. Defaults to Tenant Root Group."
+  type        = string
+  default     = null
+}
+
 variable "tenant_id" {
   description = "Azure AD tenant ID."
   type        = string
