@@ -32,10 +32,3 @@ resource "azurerm_management_group" "level3_platform" {
   display_name               = each.value
   parent_management_group_id = azurerm_management_group.level2["platform"].id
 }
-
-resource "azurerm_management_group_subscription_association" "this" {
-  for_each = local.subscription_associations
-
-  management_group_id = each.value.level == 2 ? azurerm_management_group.level2[each.value.mg_key].id : azurerm_management_group.level3_platform[each.value.mg_key].id
-  subscription_id     = "/subscriptions/${each.value.sub_id}"
-}
