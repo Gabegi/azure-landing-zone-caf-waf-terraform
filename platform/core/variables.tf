@@ -4,16 +4,6 @@ variable "root_parent_management_group_id" {
   default     = "/providers/Microsoft.Management/managementGroups/Test"
 }
 
-variable "tenant_id" {
-  description = "Azure AD tenant ID."
-  type        = string
-}
-
-variable "subscription_id" {
-  description = "Subscription ID used by the azurerm provider (typically the management subscription)."
-  type        = string
-}
-
 variable "platform_subscription_id" {
   description = "Subscription ID to associate with all platform management groups."
   type        = string
