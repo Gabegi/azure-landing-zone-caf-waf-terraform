@@ -1,0 +1,52 @@
+name: platform-core-destroy
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: "Type DESTROY to confirm you want to destroy all platform-core resources"
+        required: true
+
+jobs:
+  destroy:
+    runs-on: [self-hosted]
+    environment: production
+
+    env:
+      ARM_USE_MSI:                      true
+      ARM_TENANT_ID:                    ${{ secrets.AZURE_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID:              ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      TF_IN_AUTOMATION:                 true
+      TF_VAR_tenant_id:                 ${{ secrets.AZURE_TENANT_ID }}
+      TF_VAR_subscription_id:           ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      TF_VAR_subscription_associations: ${{ secrets.TF_SUBSCRIPTION_ASSOCIATIONS }}
+
+    defaults:
+      run:
+        working-directory: platform/core
+
+    steps:
+      - name: Check confirmation
+        if: github.event.inputs.confirm != 'DESTROY'
+        run: |
+          echo "⚠️  WARNING: You must type DESTROY to confirm. Got: '${{ github.event.inputs.confirm }}'"
+          exit 1
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          auth-type: IDENTITY
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform init
+        run: terraform init -input=false
+
+      - name: Terraform destroy
+        run: terraform destroy -auto-approve -no-color -input=false
