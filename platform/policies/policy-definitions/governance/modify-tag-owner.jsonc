@@ -1,0 +1,42 @@
+{
+  "name": "contoso-modify-tag-owner",
+  "properties": {
+    "displayName": "Modify — Add or replace owner tag",
+    "description": "Adds or replaces the 'owner' tag on resources and resource groups with the value supplied as a parameter.",
+    "mode": "Indexed",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Tags"
+    },
+    "parameters": {
+      "tagValue": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Owner tag value",
+          "description": "Value to set for the 'owner' tag (e.g. platform-team@contoso.com)"
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "field": "tags['owner']",
+        "notEquals": "[parameters('tagValue')]"
+      },
+      "then": {
+        "effect": "modify",
+        "details": {
+          "roleDefinitionIds": [
+            "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c" // Contributor
+          ],
+          "operations": [
+            {
+              "operation": "addOrReplace",
+              "field": "tags['owner']",
+              "value": "[parameters('tagValue')]"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
