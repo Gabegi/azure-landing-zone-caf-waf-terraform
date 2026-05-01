@@ -20,9 +20,5 @@
     "environmentTagValue": "production",
     "costCenterTagValue": "CC-000",
     "ownerTagValue": "platform-team@contoso.com"
-  },
-  "managedIdentityLocations": {
-    "tenant01": "eastus",
-    "epac-dev": "eastus"
   }
 }
