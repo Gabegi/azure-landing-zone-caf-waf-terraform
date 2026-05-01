@@ -11,27 +11,88 @@ on:
       - "platform/policies/**"
 
 jobs:
-  plan:
+  # ─── DEV: plan + deploy to epac-dev MG ───────────────────────────────────
+  epac-dev:
+    if: github.event_name == 'pull_request'
     runs-on: [self-hosted]
-    environment: TENANT-PLAN
+    environment: EPAC-DEV
+
     env:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      ARM_USE_MSI:     true
+
+    defaults:
+      run:
+        working-directory: platform/policies
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install EPAC module
+      - name: Install EPAC
         shell: pwsh
         run: Install-Module -Name EnterprisePolicyAsCode -Force -Scope CurrentUser
 
-      - name: Build deployment plan
+      - name: Login to Azure
+        shell: pwsh
+        run: |
+          Connect-AzAccount -TenantId $env:AZURE_TENANT_ID `
+            -Identity
+
+      - name: Build dev plan
         shell: pwsh
         run: |
           Build-DeploymentPlans `
-            -definitionsRootFolder "platform/policies" `
-            -outputFolder "platform/policies/Output" `
+            -definitionsRootFolder "." `
+            -outputFolder "./Output" `
+            -pacEnvironment "epac-dev"
+
+      - name: Deploy dev policy plan
+        shell: pwsh
+        run: |
+          Deploy-PolicyPlan `
+            -inputFolder "./Output" `
+            -pacEnvironment "epac-dev"
+
+      - name: Deploy dev roles plan
+        shell: pwsh
+        run: |
+          Deploy-RolesPlan `
+            -inputFolder "./Output" `
+            -pacEnvironment "epac-dev"
+
+  # ─── PROD: plan ───────────────────────────────────────────────────────────
+  tenant-plan:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: [self-hosted]
+    environment: TENANT-PLAN
+
+    env:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+
+    defaults:
+      run:
+        working-directory: platform/policies
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install EPAC
+        shell: pwsh
+        run: Install-Module -Name EnterprisePolicyAsCode -Force -Scope CurrentUser
+
+      - name: Login to Azure
+        shell: pwsh
+        run: |
+          Connect-AzAccount -TenantId $env:AZURE_TENANT_ID `
+            -Identity
+
+      - name: Build production plan
+        shell: pwsh
+        run: |
+          Build-DeploymentPlans `
+            -definitionsRootFolder "." `
+            -outputFolder "./Output" `
             -pacEnvironment "tenant01"
 
       - name: Upload plan
@@ -39,16 +100,21 @@ jobs:
         with:
           name: epac-plan
           path: platform/policies/Output
+          retention-days: 1
 
-  deploy-policy:
-    needs: plan
+  # ─── PROD: deploy policies ────────────────────────────────────────────────
+  tenant-deploy-policy:
+    needs: tenant-plan
     runs-on: [self-hosted]
     environment: TENANT-DEPLOY-POLICY
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
     env:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      ARM_USE_MSI:     true
+
+    defaults:
+      run:
+        working-directory: platform/policies
 
     steps:
       - uses: actions/checkout@v4
@@ -59,26 +125,36 @@ jobs:
           name: epac-plan
           path: platform/policies/Output
 
-      - name: Install EPAC module
+      - name: Install EPAC
         shell: pwsh
         run: Install-Module -Name EnterprisePolicyAsCode -Force -Scope CurrentUser
+
+      - name: Login to Azure
+        shell: pwsh
+        run: |
+          Connect-AzAccount -TenantId $env:AZURE_TENANT_ID `
+            -Identity
 
       - name: Deploy policy plan
         shell: pwsh
         run: |
           Deploy-PolicyPlan `
-            -inputFolder "platform/policies/Output" `
+            -inputFolder "./Output" `
             -pacEnvironment "tenant01"
 
-  deploy-roles:
-    needs: deploy-policy
+  # ─── PROD: deploy roles ───────────────────────────────────────────────────
+  tenant-deploy-roles:
+    needs: tenant-deploy-policy
     runs-on: [self-hosted]
     environment: TENANT-DEPLOY-ROLES
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
     env:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      ARM_USE_MSI:     true
+
+    defaults:
+      run:
+        working-directory: platform/policies
 
     steps:
       - uses: actions/checkout@v4
@@ -89,13 +165,19 @@ jobs:
           name: epac-plan
           path: platform/policies/Output
 
-      - name: Install EPAC module
+      - name: Install EPAC
         shell: pwsh
         run: Install-Module -Name EnterprisePolicyAsCode -Force -Scope CurrentUser
+
+      - name: Login to Azure
+        shell: pwsh
+        run: |
+          Connect-AzAccount -TenantId $env:AZURE_TENANT_ID `
+            -Identity
 
       - name: Deploy roles plan
         shell: pwsh
         run: |
           Deploy-RolesPlan `
-            -inputFolder "platform/policies/Output" `
+            -inputFolder "./Output" `
             -pacEnvironment "tenant01"
