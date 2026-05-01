@@ -1,0 +1,37 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/enterprise-azure-policy-as-code/main/Schemas/policy-set-definition-schema.json",
+  "name": "contoso-controls",
+  "properties": {
+    "displayName": "Contoso Governance — Controls",
+    "description": "Deny classic resources and unapproved resource types.",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "General"
+    },
+    "parameters": {
+      "notAllowedResourceTypes": {
+        "type": "Array",
+        "defaultValue": [
+          "Microsoft.ClassicCompute/virtualMachines",
+          "Microsoft.ClassicStorage/storageAccounts",
+          "Microsoft.ClassicNetwork/virtualNetworks"
+        ]
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "deny-classic-resources",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/6c112d4e-5bc7-47ae-a041-ea2d9dccd749",
+        "parameters": {
+          "listOfResourceTypesNotAllowed": {
+            "value": "[parameters('notAllowedResourceTypes')]"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "deny-classic-administrators",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/1d84d5fb-01f6-4d12-ba4f-4a26081d403d"
+      }
+    ]
+  }
+}
