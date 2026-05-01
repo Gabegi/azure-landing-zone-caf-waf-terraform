@@ -1,5 +1,6 @@
 {
-  "nodeName": "/root/",
+  "$schema": "https://raw.githubusercontent.com/Azure/enterprise-azure-policy-as-code/main/Schemas/policy-assignment-schema.json",
+  "nodeName": "/contoso/",
   "scope": {
     "tenant01": [
       "/providers/Microsoft.Management/managementGroups/contoso"
@@ -8,17 +9,50 @@
       "/providers/Microsoft.Management/managementGroups/contoso-dev"
     ]
   },
-  "assignment": {
-    "name": "root-governance",
-    "displayName": "Contoso — Governance baseline",
-    "description": "Applies mandatory governance tags across all Contoso resources"
-  },
-  "definitionEntry": {
-    "policySetName": "contoso-governance"
-  },
-  "parameters": {
-    "environmentTagValue": "production",
-    "costCenterTagValue": "CC-000",
-    "ownerTagValue": "platform-team@contoso.com"
-  }
+  "children": [
+    {
+      "nodeName": "governance-tagging/",
+      "assignment": {
+        "name": "contoso-gov-tagging",
+        "displayName": "Contoso Governance — Tagging",
+        "description": "Applies tagging Modify policies across all MGs including sandbox"
+      },
+      "definitionEntry": {
+        "policySetName": "contoso-tagging"
+      },
+      "parameters": {
+        "environmentTagValue": "untagged",
+        "costCenterTagValue": "unassigned",
+        "ownerTagValue": "platform-team@contoso.com"
+      },
+      "enforcementMode": "Default"
+    },
+    {
+      "nodeName": "governance-controls/",
+      "notScope": {
+        "tenant01": [
+          "/providers/Microsoft.Management/managementGroups/contoso-sandbox"
+        ],
+        "epac-dev": [
+          "/providers/Microsoft.Management/managementGroups/contoso-dev-sandbox"
+        ]
+      },
+      "assignment": {
+        "name": "contoso-gov-controls",
+        "displayName": "Contoso Governance — Controls",
+        "description": "Deny classic resources and unapproved resource types — excludes sandbox"
+      },
+      "definitionEntry": {
+        "policySetName": "contoso-controls"
+      },
+      "parameters": {
+        "notAllowedResourceTypes": [
+          "Microsoft.ClassicCompute/virtualMachines",
+          "Microsoft.ClassicStorage/storageAccounts",
+          "Microsoft.ClassicNetwork/virtualNetworks"
+        ]
+      },
+      "enforcementMode": "Default"
+    }
+  ]
 }
