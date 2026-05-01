@@ -1,0 +1,42 @@
+{
+  "name": "contoso-modify-tag-environment",
+  "properties": {
+    "displayName": "Modify — Add or replace environment tag",
+    "description": "Adds or replaces the 'environment' tag on resources and resource groups with the value supplied as a parameter.",
+    "mode": "Indexed",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Tags"
+    },
+    "parameters": {
+      "tagValue": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Environment tag value",
+          "description": "Value to set for the 'environment' tag (e.g. production, sandbox)"
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "field": "tags['environment']",
+        "notEquals": "[parameters('tagValue')]"
+      },
+      "then": {
+        "effect": "modify",
+        "details": {
+          "roleDefinitionIds": [
+            "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c" // Contributor
+          ],
+          "operations": [
+            {
+              "operation": "addOrReplace",
+              "field": "tags['environment']",
+              "value": "[parameters('tagValue')]"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
