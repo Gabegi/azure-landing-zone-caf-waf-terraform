@@ -1,5 +1,5 @@
 {
-  "nodeName": "/contoso-root/",
+  "nodeName": "/root/",
   "scope": {
     "tenant01": [
       "/providers/Microsoft.Management/managementGroups/contoso"
@@ -9,17 +9,20 @@
     ]
   },
   "assignment": {
-    "name": "contoso-baseline",
-    "displayName": "Contoso Baseline",
-    "description": "Enforces the Contoso baseline initiative across the entire hierarchy"
+    "name": "root-governance",
+    "displayName": "Contoso — Governance baseline",
+    "description": "Applies mandatory governance tags across all Contoso resources"
   },
   "definitionEntry": {
-    "policySetName": "contoso-baseline"
+    "policySetName": "contoso-governance"
   },
   "parameters": {
-    "environmentTagName": "environment",
-    "costCenterTagName": "cost-center",
-    "ownerTagName": "owner"
+    "environmentTagValue": "production",
+    "costCenterTagValue": "CC-000",
+    "ownerTagValue": "platform-team@contoso.com"
   },
-  "enforcementMode": "Default"
+  "managedIdentityLocations": {
+    "tenant01": "eastus",
+    "epac-dev": "eastus"
+  }
 }
