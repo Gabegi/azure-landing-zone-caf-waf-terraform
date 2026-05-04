@@ -16,7 +16,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: platform/core
+        working-directory: platform/core/management-groups
 
     steps:
       - name: Checkout
@@ -48,7 +48,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: tfplan
-          path: platform/core/tfplan
+          path: platform/core/management-groups/tfplan
 
       - name: Terraform apply
         run: terraform apply -auto-approve -no-color tfplan

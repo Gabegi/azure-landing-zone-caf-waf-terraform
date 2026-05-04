@@ -7,7 +7,7 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - "platform/policies/**"
+      - "platform/core/policies/**"
 
 jobs:
   # ─── JOB 1: PLAN ──────────────────────────────────────────────────────────
@@ -25,7 +25,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: platform/policies
+        working-directory: platform/core/policies
 
     steps:
       - uses: actions/checkout@v4
@@ -85,7 +85,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: epac-plan
-          path: platform/policies/Output
+          path: platform/core/policies/Output
           if-no-files-found: ignore
           retention-days: 1
 
@@ -111,7 +111,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: platform/policies
+        working-directory: platform/core/policies
 
     steps:
       - uses: actions/checkout@v4
@@ -120,7 +120,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: epac-plan
-          path: platform/policies/Output
+          path: platform/core/policies/Output
 
       - name: Inject secrets into global settings
         shell: pwsh

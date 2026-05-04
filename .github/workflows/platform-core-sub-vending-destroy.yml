@@ -20,7 +20,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: platform/sub-vending
+        working-directory: platform/core/sub-vending
 
     steps:
       - name: Check confirmation

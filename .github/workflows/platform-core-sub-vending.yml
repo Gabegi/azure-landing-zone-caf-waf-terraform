@@ -4,11 +4,11 @@ on:
   push:
     branches: [main]
     paths:
-      - "platform/sub-vending/subscriptions/*.tfvars"
+      - "platform/core/sub-vending/subscriptions/*.tfvars"
   pull_request:
     branches: [main]
     paths:
-      - "platform/sub-vending/subscriptions/*.tfvars"
+      - "platform/core/sub-vending/subscriptions/*.tfvars"
 
 jobs:
   detect:
@@ -23,7 +23,7 @@ jobs:
       - name: Get changed tfvars files
         id: changed
         run: |
-          FILES=$(git diff --name-only HEAD~1 HEAD -- 'platform/sub-vending/subscriptions/*.tfvars' | jq -R -s -c 'split("\n")[:-1]')
+          FILES=$(git diff --name-only HEAD~1 HEAD -- 'platform/core/sub-vending/subscriptions/*.tfvars' | jq -R -s -c 'split("\n")[:-1]')
           echo "files=$FILES" >> $GITHUB_OUTPUT
 
   deploy:
@@ -43,7 +43,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: platform/sub-vending
+        working-directory: platform/core/sub-vending
 
     steps:
       - uses: actions/checkout@v4
