@@ -6,7 +6,6 @@ on:
 jobs:
   # ─── DEV: plan + deploy to epac-dev MG ───────────────────────────────────
   epac-dev:
-    if: github.event_name == 'pull_request'
     runs-on: [self-hosted]
     environment: EPAC-DEV
 
@@ -55,7 +54,6 @@ jobs:
 
   # ─── PROD: plan ───────────────────────────────────────────────────────────
   tenant-plan:
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: [self-hosted]
     environment: TENANT-PLAN
 
