@@ -31,6 +31,10 @@ jobs:
         shell: pwsh
         run: Connect-AzAccount -TenantId $env:AZURE_TENANT_ID -Identity
 
+      - name: Debug global settings
+        shell: pwsh
+        run: Get-Content "./global-settings.jsonc"
+
       # EPAC reads:
       #   global-settings.jsonc          → tenant, root MG scope, managed identity region
       #   policy-definitions/**/*.jsonc  → custom policy definitions (modify-tag-*)
