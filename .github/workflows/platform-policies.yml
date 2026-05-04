@@ -19,6 +19,7 @@ jobs:
 
     env:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      EPAC_PAC_OWNER_ID: ${{ secrets.EPAC_PAC_OWNER_ID }}
 
     defaults:
       run:
@@ -31,9 +32,15 @@ jobs:
         shell: pwsh
         run: Connect-AzAccount -TenantId $env:AZURE_TENANT_ID -Identity
 
-      - name: Debug global settings
+      # Injects tenant ID and pacOwnerId from GitHub secrets into global-settings.jsonc
+      # at runtime so neither value is hardcoded in the repo.
+      - name: Inject secrets into global settings
         shell: pwsh
-        run: Get-Content "./global-settings.jsonc"
+        run: |
+          (Get-Content "./global-settings.jsonc") `
+            -replace 'your-tenant-id', $env:AZURE_TENANT_ID `
+            -replace 'your-generated-guid', $env:EPAC_PAC_OWNER_ID |
+            Set-Content "./global-settings.jsonc"
 
       # EPAC reads:
       #   global-settings.jsonc          → tenant, root MG scope, managed identity region
