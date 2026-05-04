@@ -3,10 +3,7 @@ name: platform-policies
 # Plan runs on every PR — no changes to Azure, just shows what would change.
 # Deploy runs on merge to main — applies the plan to production.
 on:
-  push:
-    branches: [main]
-    paths:
-      - "platform/policies/**"
+  workflow_dispatch:
   pull_request:
     branches: [main]
     paths:
