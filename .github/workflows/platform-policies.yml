@@ -50,14 +50,20 @@ jobs:
       - name: Build plan
         shell: pwsh
         run: |
+          $ErrorActionPreference = 'Stop'
           Build-DeploymentPlans `
             -definitionsRootFolder "." `
             -outputFolder "./Output" `
             -pacEnvironment "tenant01"
 
-      - name: Show plan output
+      - name: Debug output folder
         shell: pwsh
-        run: Get-ChildItem -Recurse "./Output" | Select-Object FullName
+        run: |
+          if (Test-Path "./Output") {
+            Get-ChildItem "./Output" -Recurse
+          } else {
+            Write-Host "Output folder does not exist"
+          }
 
       - name: Upload plan
         uses: actions/upload-artifact@v4
