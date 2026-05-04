@@ -98,11 +98,8 @@ jobs:
     runs-on: [self-hosted]
     environment: production
     if: |
-      needs.plan.outputs.has-changes == 'True' &&
-      (
-        github.event_name == 'workflow_dispatch' ||
-        (github.ref == 'refs/heads/main' && github.event_name == 'push')
-      )
+      github.event_name == 'workflow_dispatch' ||
+      (github.ref == 'refs/heads/main' && github.event_name == 'push')
 
     env:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -117,6 +114,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Download plan
+        if: needs.plan.outputs.has-changes == 'True'
         uses: actions/download-artifact@v4
         with:
           name: epac-plan
@@ -136,6 +134,7 @@ jobs:
 
       # Pushes policy definitions, initiatives, and assignments to Azure.
       - name: Deploy policy plan
+        if: needs.plan.outputs.has-changes == 'True'
         shell: pwsh
         run: |
           Deploy-PolicyPlan `
