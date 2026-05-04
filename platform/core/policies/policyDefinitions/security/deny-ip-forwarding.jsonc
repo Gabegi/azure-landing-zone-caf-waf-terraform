@@ -1,0 +1,19 @@
+{
+  "name": "contoso-deny-ip-forwarding",
+  "properties": {
+    "displayName": "Deny — IP forwarding on NICs",
+    "description": "Denies network interfaces with IP forwarding enabled. IP forwarding should only be used on approved network virtual appliances.",
+    "mode": "All",
+    "metadata": { "version": "1.0.0", "category": "Network" },
+    "parameters": {},
+    "policyRule": {
+      "if": {
+        "allOf": [
+          { "field": "type", "equals": "Microsoft.Network/networkInterfaces" },
+          { "field": "Microsoft.Network/networkInterfaces/enableIPForwarding", "equals": true }
+        ]
+      },
+      "then": { "effect": "Deny" }
+    }
+  }
+}
