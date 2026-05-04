@@ -45,8 +45,8 @@ jobs:
         shell: pwsh
         run: |
           (Get-Content "./global-settings.jsonc") `
-            -replace 'your-tenant-id', $env:AZURE_TENANT_ID `
-            -replace 'your-generated-guid', $env:EPAC_PAC_OWNER_ID |
+            -replace 'replace-at-runtime-tenant', $env:AZURE_TENANT_ID `
+            -replace 'replace-at-runtime-owner', $env:EPAC_PAC_OWNER_ID |
             Set-Content "./global-settings.jsonc"
 
       # EPAC reads:
@@ -111,8 +111,8 @@ jobs:
         shell: pwsh
         run: |
           (Get-Content "./global-settings.jsonc") `
-            -replace 'your-tenant-id', $env:AZURE_TENANT_ID `
-            -replace 'your-generated-guid', $env:EPAC_PAC_OWNER_ID |
+            -replace 'replace-at-runtime-tenant', $env:AZURE_TENANT_ID `
+            -replace 'replace-at-runtime-owner', $env:EPAC_PAC_OWNER_ID |
             Set-Content "./global-settings.jsonc"
 
       - name: Login to Azure
