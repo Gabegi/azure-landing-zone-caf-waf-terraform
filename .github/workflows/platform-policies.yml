@@ -91,6 +91,7 @@ jobs:
     env:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       EPAC_PAC_OWNER_ID: ${{ secrets.EPAC_PAC_OWNER_ID }}
+      RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}
 
     defaults:
       run:
@@ -135,3 +136,12 @@ jobs:
             -inputFolder "./Output" `
             -definitionsRootFolder "." `
             -pacEnvironment "tenant01"
+
+      # Triggers a compliance scan so Azure evaluates all resources against the
+      # newly deployed policies immediately rather than waiting for the next cycle.
+      - name: Trigger compliance scan
+        shell: pwsh
+        run: |
+          Start-AzPolicyComplianceScan `
+            -ResourceGroupName $env:RESOURCE_GROUP `
+            -AsJob
