@@ -145,6 +145,7 @@ jobs:
       # Assigns Contributor to the managed identity used by Modify policies
       # so Azure can automatically write tags on non-compliant resources.
       - name: Deploy roles plan
+        if: needs.plan.outputs.has-changes == 'True'
         shell: pwsh
         run: |
           Deploy-RolesPlan `
