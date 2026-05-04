@@ -85,6 +85,7 @@ jobs:
 
     env:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      EPAC_PAC_OWNER_ID: ${{ secrets.EPAC_PAC_OWNER_ID }}
 
     defaults:
       run:
@@ -98,6 +99,14 @@ jobs:
         with:
           name: epac-plan
           path: platform/policies/Output
+
+      - name: Inject secrets into global settings
+        shell: pwsh
+        run: |
+          (Get-Content "./global-settings.jsonc") `
+            -replace 'your-tenant-id', $env:AZURE_TENANT_ID `
+            -replace 'your-generated-guid', $env:EPAC_PAC_OWNER_ID |
+            Set-Content "./global-settings.jsonc"
 
       - name: Login to Azure
         shell: pwsh
