@@ -55,11 +55,16 @@ jobs:
             -outputFolder "./Output" `
             -pacEnvironment "tenant01"
 
+      - name: Show plan output
+        shell: pwsh
+        run: Get-ChildItem -Recurse "./Output" | Select-Object FullName
+
       - name: Upload plan
         uses: actions/upload-artifact@v4
         with:
           name: epac-plan
           path: platform/policies/Output
+          if-no-files-found: error
           retention-days: 1
 
   # ─── JOB 2: DEPLOY ────────────────────────────────────────────────────────
