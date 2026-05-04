@@ -33,7 +33,7 @@ jobs:
       - name: Login to Azure
         shell: pwsh
         run: |
-          Connect-AzAccount -TenantId $env:AZURE_TENANT_ID -Identity
+          $null = Connect-AzAccount -TenantId $env:AZURE_TENANT_ID -Identity
           $ctx = Get-AzContext
           Write-Host "::add-mask::$($ctx.Account.Id)"
           Write-Host "::add-mask::$env:AZURE_TENANT_ID"
@@ -132,7 +132,7 @@ jobs:
 
       - name: Login to Azure
         shell: pwsh
-        run: Connect-AzAccount -TenantId $env:AZURE_TENANT_ID -Identity
+        run: $null = Connect-AzAccount -TenantId $env:AZURE_TENANT_ID -Identity
 
       # Pushes policy definitions, initiatives, and assignments to Azure.
       - name: Deploy policy plan
