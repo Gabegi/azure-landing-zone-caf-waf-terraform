@@ -153,8 +153,7 @@ jobs:
             -definitionsRootFolder "." `
             -pacEnvironment "tenant01"
 
-      # Lists all policy assignments across every MG in the hierarchy so the
-      # pipeline log shows exactly what is deployed after each run.
+      # Lists all policy assignments directly deployed at each MG in the hierarchy.
       - name: List deployed policy assignments
         shell: pwsh
         run: |
@@ -172,11 +171,11 @@ jobs:
           foreach ($scope in $scopes) {
             $mgName = $scope.Split("/")[-1]
             $assignments = Get-AzPolicyAssignment -Scope $scope -WarningAction SilentlyContinue |
-              Where-Object { $_.Properties.Scope -eq $scope }
+              Where-Object { $_.Properties.Scope -like "*$mgName*" }
             if ($assignments) {
-              Write-Host "`n── $mgName ──────────────────────────"
+              Write-Host "`n── $mgName"
               $assignments | ForEach-Object {
-                Write-Host "  $($_.Name)  [$($_.Properties.EnforcementMode)]"
+                Write-Host "   $($_.Name)  |  $($_.Properties.DisplayName)  |  [$($_.Properties.EnforcementMode)]"
               }
             }
           }
@@ -188,5 +187,5 @@ jobs:
         env:
           AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         run: |
-          Set-AzContext -SubscriptionId $env:AZURE_SUBSCRIPTION_ID
-          Start-AzPolicyComplianceScan -AsJob
+          $null = Set-AzContext -SubscriptionId $env:AZURE_SUBSCRIPTION_ID
+          $null = Start-AzPolicyComplianceScan -AsJob
