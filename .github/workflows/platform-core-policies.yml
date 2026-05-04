@@ -130,7 +130,9 @@ jobs:
 
       - name: Login to Azure
         shell: pwsh
-        run: $null = Connect-AzAccount -TenantId $env:AZURE_TENANT_ID -Identity
+        run: |
+          $null = Connect-AzAccount -TenantId $env:AZURE_TENANT_ID -Identity
+          az login --identity --output none
 
       # Pushes policy definitions, initiatives, and assignments to Azure.
       - name: Deploy policy plan
