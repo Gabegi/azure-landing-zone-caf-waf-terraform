@@ -109,6 +109,7 @@ jobs:
         run: |
           Deploy-PolicyPlan `
             -inputFolder "./Output" `
+            -definitionsRootFolder "." `
             -pacEnvironment "tenant01"
 
       # Assigns Contributor to the managed identity used by Modify policies
@@ -118,4 +119,5 @@ jobs:
         run: |
           Deploy-RolesPlan `
             -inputFolder "./Output" `
+            -definitionsRootFolder "." `
             -pacEnvironment "tenant01"
