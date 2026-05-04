@@ -1,14 +1,7 @@
 name: platform-policies
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "platform/policies/**"
-  pull_request:
-    branches: [main]
-    paths:
-      - "platform/policies/**"
+  workflow_dispatch:
 
 jobs:
   # ─── DEV: plan + deploy to epac-dev MG ───────────────────────────────────
