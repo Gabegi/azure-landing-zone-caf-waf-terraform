@@ -6,7 +6,7 @@
       "/providers/Microsoft.Management/managementGroups/contoso"
     ]
   },
-  "notScope": {
+  "notScopes": {
     "tenant01": [
       "/providers/Microsoft.Management/managementGroups/contoso-sandbox"
     ]

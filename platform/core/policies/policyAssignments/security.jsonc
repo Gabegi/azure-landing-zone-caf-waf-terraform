@@ -15,7 +15,7 @@
         "description": "Prevents direct internet exposure in landing zone subscriptions"
       },
       "definitionEntry": {
-        "policyDefinitionName": "contoso-deny-public-ip"
+        "policyName": "contoso-deny-public-ip"
       },
       "enforcementMode": "Default"
     },
@@ -32,7 +32,7 @@
         "description": "Prevents direct internet exposure in platform subscriptions"
       },
       "definitionEntry": {
-        "policyDefinitionName": "contoso-deny-public-ip"
+        "policyName": "contoso-deny-public-ip"
       },
       "enforcementMode": "Default"
     }
