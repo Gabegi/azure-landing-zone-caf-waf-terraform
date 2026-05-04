@@ -1,0 +1,40 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/enterprise-azure-policy-as-code/main/Schemas/policy-assignment-schema.json",
+  "nodeName": "/security/",
+  "children": [
+    {
+      "nodeName": "landingzones/",
+      "scope": {
+        "tenant01": [
+          "/providers/Microsoft.Management/managementGroups/contoso-workloads"
+        ]
+      },
+      "assignment": {
+        "name": "lz-deny-public-ip",
+        "displayName": "Landing Zones — Deny public IP addresses",
+        "description": "Prevents direct internet exposure in landing zone subscriptions"
+      },
+      "definitionEntry": {
+        "policyDefinitionName": "contoso-deny-public-ip"
+      },
+      "enforcementMode": "Default"
+    },
+    {
+      "nodeName": "platform/",
+      "scope": {
+        "tenant01": [
+          "/providers/Microsoft.Management/managementGroups/contoso-platform"
+        ]
+      },
+      "assignment": {
+        "name": "platform-deny-public-ip",
+        "displayName": "Platform — Deny public IP addresses",
+        "description": "Prevents direct internet exposure in platform subscriptions"
+      },
+      "definitionEntry": {
+        "policyDefinitionName": "contoso-deny-public-ip"
+      },
+      "enforcementMode": "Default"
+    }
+  ]
+}

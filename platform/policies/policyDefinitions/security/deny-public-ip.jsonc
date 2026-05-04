@@ -1,0 +1,22 @@
+{
+  "name": "contoso-deny-public-ip",
+  "properties": {
+    "displayName": "Deny — Public IP addresses",
+    "description": "Denies creation of public IP addresses to prevent direct internet exposure. All inbound traffic must flow through the hub.",
+    "mode": "All",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Network"
+    },
+    "parameters": {},
+    "policyRule": {
+      "if": {
+        "field": "type",
+        "equals": "Microsoft.Network/publicIPAddresses"
+      },
+      "then": {
+        "effect": "Deny"
+      }
+    }
+  }
+}
