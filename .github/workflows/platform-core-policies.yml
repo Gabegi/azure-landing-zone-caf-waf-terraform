@@ -153,18 +153,18 @@ jobs:
             -definitionsRootFolder "." `
             -pacEnvironment "tenant01"
 
-      # Lists all policy assignments across the Contoso hierarchy grouped by MG.
+      # Lists all EPAC-managed policy assignments across the Contoso hierarchy grouped by MG.
       - name: List deployed policy assignments
         shell: pwsh
         run: |
           $root = "/providers/Microsoft.Management/managementGroups/contoso"
-          $all = Get-AzPolicyAssignment -Scope $root -WarningAction SilentlyContinue
-          $grouped = $all | Group-Object { $_.Properties.Scope }
+          $all = az policy assignment list --scope $root --query "[?!starts_with(name, 'sys.')]" | ConvertFrom-Json
+          $grouped = $all | Group-Object { $_.scope }
           foreach ($group in $grouped | Sort-Object Name) {
             $mgName = $group.Name.Split("/")[-1]
             Write-Host "`n── $mgName"
             foreach ($a in $group.Group) {
-              Write-Host "   $($a.Name)  |  $($a.Properties.DisplayName)  |  [$($a.Properties.EnforcementMode)]"
+              Write-Host "   $($a.name)  |  $($a.displayName)  |  [$($a.enforcementMode)]"
             }
           }
 
