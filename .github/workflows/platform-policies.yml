@@ -1,23 +1,26 @@
 name: platform-policies
 
-# Triggered manually from the GitHub Actions UI.
-# Three sequential jobs — each requires human approval via its GitHub environment gate
-# before proceeding. Nothing is deployed until a reviewer approves.
+# Plan runs on every PR — no changes to Azure, just shows what would change.
+# Deploy runs on merge to main — applies the plan to production.
 on:
-  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "platform/policies/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - "platform/policies/**"
 
 jobs:
   # ─── JOB 1: PLAN ──────────────────────────────────────────────────────────
-  # Reads all .jsonc files under platform/policies/ and compares them against
-  # what is currently deployed in Azure. Produces a plan (create/update/delete)
-  # but makes NO changes to Azure. The plan is uploaded as an artifact so the
-  # next jobs can use it without re-running the comparison.
+  # Reads all .jsonc files and compares them against what is currently deployed
+  # in Azure. Produces a plan but makes NO changes. Runs on both PR and push.
   plan:
     runs-on: [self-hosted]
-    environment: TENANT-PLAN
+    environment: production
 
     env:
-      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
 
     defaults:
@@ -27,17 +30,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Authenticates using the VM's managed identity — no client secret needed.
       - name: Login to Azure
         shell: pwsh
         run: Connect-AzAccount -TenantId $env:AZURE_TENANT_ID -Identity
 
       # EPAC reads:
-      #   global-settings.jsonc          → tenant ID, root MG scope, managed identity region
-      #   policy-definitions/**/*.jsonc  → custom policy definitions (e.g. modify-tag-*)
-      #   policy-set-definitions/*.jsonc → initiatives grouping policies (contoso-tagging, contoso-controls)
-      #   policy-assignments/*.jsonc     → where to assign, parameters, and notScope exclusions
-      # Output is written to ./Output — a set of JSON plan files, not yet applied.
+      #   global-settings.jsonc          → tenant, root MG scope, managed identity region
+      #   policy-definitions/**/*.jsonc  → custom policy definitions (modify-tag-*)
+      #   policy-set-definitions/*.jsonc → initiatives (contoso-tagging, contoso-controls)
+      #   policy-assignments/*.jsonc     → assignments, parameters, notScope exclusions
       - name: Build plan
         shell: pwsh
         run: |
@@ -46,8 +47,6 @@ jobs:
             -outputFolder "./Output" `
             -pacEnvironment "tenant01"
 
-      # Save the plan so deploy-policy and deploy-roles can download it.
-      # retention-days: 1 keeps storage costs minimal — plan is only needed for this run.
       - name: Upload plan
         uses: actions/upload-artifact@v4
         with:
@@ -55,20 +54,17 @@ jobs:
           path: platform/policies/Output
           retention-days: 1
 
-  # ─── JOB 2: DEPLOY POLICIES ───────────────────────────────────────────────
-  # Applies the policy part of the plan to Azure:
-  #   - Creates or updates custom policy definitions
-  #   - Creates or updates policy set definitions (initiatives)
-  #   - Creates or updates policy assignments at the contoso management group
-  # Requires manual approval from a reviewer in the TENANT-DEPLOY-POLICY environment
-  # before running. Waits for job 1 to complete first.
-  deploy-policy:
+  # ─── JOB 2: DEPLOY ────────────────────────────────────────────────────────
+  # Applies the plan to Azure. Only runs on merge to main, not on PRs.
+  # Deploys policy definitions, initiatives, and assignments first, then the
+  # RBAC role assignments the Modify policies need for tag remediation.
+  deploy:
     needs: plan
     runs-on: [self-hosted]
-    environment: TENANT-DEPLOY-POLICY
+    environment: production
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     env:
-      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
 
     defaults:
@@ -78,7 +74,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Download the plan produced in job 1 — Deploy-PolicyPlan reads from this folder.
       - name: Download plan
         uses: actions/download-artifact@v4
         with:
@@ -90,47 +85,18 @@ jobs:
         run: Connect-AzAccount -TenantId $env:AZURE_TENANT_ID -Identity
 
       # Pushes policy definitions, initiatives, and assignments to Azure.
-      # After this step your policies are live but the Modify effect won't work
-      # yet — the remediation identity needs role assignments (handled in job 3).
       - name: Deploy policy plan
         shell: pwsh
-        run: Deploy-PolicyPlan -inputFolder "./Output" -pacEnvironment "tenant01"
+        run: |
+          Deploy-PolicyPlan `
+            -inputFolder "./Output" `
+            -pacEnvironment "tenant01"
 
-  # ─── JOB 3: DEPLOY ROLES ──────────────────────────────────────────────────
-  # Applies the role assignment part of the plan to Azure.
-  # The Modify tag policies need a system-assigned managed identity with Contributor
-  # rights to write tags on resources. This job creates those RBAC assignments.
-  # Kept separate from job 2 so a role assignment failure cannot roll back policy
-  # deployments, and so both steps can be gated independently.
-  deploy-roles:
-    needs: deploy-policy
-    runs-on: [self-hosted]
-    environment: TENANT-DEPLOY-ROLES
-
-    env:
-      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-
-    defaults:
-      run:
-        working-directory: platform/policies
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Download plan
-        uses: actions/download-artifact@v4
-        with:
-          name: epac-plan
-          path: platform/policies/Output
-
-      - name: Login to Azure
-        shell: pwsh
-        run: Connect-AzAccount -TenantId $env:AZURE_TENANT_ID -Identity
-
-      # Assigns the Contributor role to the managed identity that the Modify
-      # policies use for remediation. After this step Azure will automatically
-      # start tagging non-compliant resources when they are created or updated.
+      # Assigns Contributor to the managed identity used by Modify policies
+      # so Azure can automatically write tags on non-compliant resources.
       - name: Deploy roles plan
         shell: pwsh
-        run: Deploy-RolesPlan -inputFolder "./Output" -pacEnvironment "tenant01"
+        run: |
+          Deploy-RolesPlan `
+            -inputFolder "./Output" `
+            -pacEnvironment "tenant01"
