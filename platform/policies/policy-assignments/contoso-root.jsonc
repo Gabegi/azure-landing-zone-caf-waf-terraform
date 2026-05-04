@@ -4,9 +4,6 @@
   "scope": {
     "tenant01": [
       "/providers/Microsoft.Management/managementGroups/contoso"
-    ],
-    "epac-dev": [
-      "/providers/Microsoft.Management/managementGroups/contoso-dev"
     ]
   },
   "children": [
@@ -32,9 +29,6 @@
       "notScope": {
         "tenant01": [
           "/providers/Microsoft.Management/managementGroups/contoso-sandbox"
-        ],
-        "epac-dev": [
-          "/providers/Microsoft.Management/managementGroups/contoso-dev-sandbox"
         ]
       },
       "assignment": {

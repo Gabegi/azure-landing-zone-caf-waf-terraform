@@ -4,56 +4,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  # ─── DEV: plan + deploy to epac-dev MG ───────────────────────────────────
-  epac-dev:
-    runs-on: [self-hosted]
-    environment: EPAC-DEV
-
-    env:
-      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-
-    defaults:
-      run:
-        working-directory: platform/policies
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install EPAC
-        shell: pwsh
-        run: Install-Module -Name EnterprisePolicyAsCode -Force -Scope CurrentUser
-
-      - name: Login to Azure
-        shell: pwsh
-        run: |
-          Connect-AzAccount -TenantId $env:AZURE_TENANT_ID `
-            -Identity
-
-      - name: Build dev plan
-        shell: pwsh
-        run: |
-          Build-DeploymentPlans `
-            -definitionsRootFolder "." `
-            -outputFolder "./Output" `
-            -pacEnvironment "epac-dev"
-
-      - name: Deploy dev policy plan
-        shell: pwsh
-        run: |
-          Deploy-PolicyPlan `
-            -inputFolder "./Output" `
-            -pacEnvironment "epac-dev"
-
-      - name: Deploy dev roles plan
-        shell: pwsh
-        run: |
-          Deploy-RolesPlan `
-            -inputFolder "./Output" `
-            -pacEnvironment "epac-dev"
-
   # ─── PROD: plan ───────────────────────────────────────────────────────────
-  tenant-plan:
+  plan:
     runs-on: [self-hosted]
     environment: TENANT-PLAN
 
@@ -68,17 +20,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install EPAC
-        shell: pwsh
-        run: Install-Module -Name EnterprisePolicyAsCode -Force -Scope CurrentUser
-
       - name: Login to Azure
         shell: pwsh
-        run: |
-          Connect-AzAccount -TenantId $env:AZURE_TENANT_ID `
-            -Identity
+        run: Connect-AzAccount -TenantId $env:AZURE_TENANT_ID -Identity
 
-      - name: Build production plan
+      - name: Build plan
         shell: pwsh
         run: |
           Build-DeploymentPlans `
@@ -94,8 +40,8 @@ jobs:
           retention-days: 1
 
   # ─── PROD: deploy policies ────────────────────────────────────────────────
-  tenant-deploy-policy:
-    needs: tenant-plan
+  deploy-policy:
+    needs: plan
     runs-on: [self-hosted]
     environment: TENANT-DEPLOY-POLICY
 
@@ -116,26 +62,17 @@ jobs:
           name: epac-plan
           path: platform/policies/Output
 
-      - name: Install EPAC
-        shell: pwsh
-        run: Install-Module -Name EnterprisePolicyAsCode -Force -Scope CurrentUser
-
       - name: Login to Azure
         shell: pwsh
-        run: |
-          Connect-AzAccount -TenantId $env:AZURE_TENANT_ID `
-            -Identity
+        run: Connect-AzAccount -TenantId $env:AZURE_TENANT_ID -Identity
 
       - name: Deploy policy plan
         shell: pwsh
-        run: |
-          Deploy-PolicyPlan `
-            -inputFolder "./Output" `
-            -pacEnvironment "tenant01"
+        run: Deploy-PolicyPlan -inputFolder "./Output" -pacEnvironment "tenant01"
 
   # ─── PROD: deploy roles ───────────────────────────────────────────────────
-  tenant-deploy-roles:
-    needs: tenant-deploy-policy
+  deploy-roles:
+    needs: deploy-policy
     runs-on: [self-hosted]
     environment: TENANT-DEPLOY-ROLES
 
@@ -156,19 +93,10 @@ jobs:
           name: epac-plan
           path: platform/policies/Output
 
-      - name: Install EPAC
-        shell: pwsh
-        run: Install-Module -Name EnterprisePolicyAsCode -Force -Scope CurrentUser
-
       - name: Login to Azure
         shell: pwsh
-        run: |
-          Connect-AzAccount -TenantId $env:AZURE_TENANT_ID `
-            -Identity
+        run: Connect-AzAccount -TenantId $env:AZURE_TENANT_ID -Identity
 
       - name: Deploy roles plan
         shell: pwsh
-        run: |
-          Deploy-RolesPlan `
-            -inputFolder "./Output" `
-            -pacEnvironment "tenant01"
+        run: Deploy-RolesPlan -inputFolder "./Output" -pacEnvironment "tenant01"
