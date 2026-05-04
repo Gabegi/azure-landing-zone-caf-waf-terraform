@@ -1,0 +1,28 @@
+{
+  "name": "contoso-require-encryption-at-rest",
+  "properties": {
+    "displayName": "Audit — Encryption at rest on virtual machines",
+    "description": "Audits virtual machines that do not have Azure Disk Encryption enabled.",
+    "mode": "Indexed",
+    "metadata": { "version": "1.0.0", "category": "Security" },
+    "parameters": {},
+    "policyRule": {
+      "if": {
+        "field": "type",
+        "equals": "Microsoft.Compute/virtualMachines"
+      },
+      "then": {
+        "effect": "AuditIfNotExists",
+        "details": {
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "existenceCondition": {
+            "anyOf": [
+              { "field": "Microsoft.Compute/virtualMachines/extensions/type", "equals": "AzureDiskEncryption" },
+              { "field": "Microsoft.Compute/virtualMachines/extensions/type", "equals": "AzureDiskEncryptionForLinux" }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

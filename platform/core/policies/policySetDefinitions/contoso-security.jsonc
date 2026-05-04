@@ -1,0 +1,44 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/enterprise-azure-policy-as-code/main/Schemas/policy-set-definition-schema.json",
+  "name": "contoso-security",
+  "properties": {
+    "displayName": "Contoso Security Baseline",
+    "description": "Security controls applied at landing zones and platform MGs: network hardening, encryption, and PaaS access restrictions.",
+    "metadata": { "version": "1.0.0", "category": "Security" },
+    "parameters": {},
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "deny-public-ip",
+        "policyDefinitionName": "contoso-deny-public-ip"
+      },
+      {
+        "policyDefinitionReferenceId": "deny-subnet-without-nsg",
+        "policyDefinitionName": "contoso-deny-subnet-without-nsg"
+      },
+      {
+        "policyDefinitionReferenceId": "deny-ip-forwarding",
+        "policyDefinitionName": "contoso-deny-ip-forwarding"
+      },
+      {
+        "policyDefinitionReferenceId": "deny-mgmt-ports-internet",
+        "policyDefinitionName": "contoso-deny-mgmt-ports-internet"
+      },
+      {
+        "policyDefinitionReferenceId": "deny-storage-no-https",
+        "policyDefinitionName": "contoso-deny-storage-no-https"
+      },
+      {
+        "policyDefinitionReferenceId": "deny-http-app-services",
+        "policyDefinitionName": "contoso-deny-http-app-services"
+      },
+      {
+        "policyDefinitionReferenceId": "deny-public-paas",
+        "policyDefinitionName": "contoso-deny-public-paas"
+      },
+      {
+        "policyDefinitionReferenceId": "require-encryption-at-rest",
+        "policyDefinitionName": "contoso-require-encryption-at-rest"
+      }
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "name": "contoso-deny-public-paas",
+  "properties": {
+    "displayName": "Deny — Public network access on PaaS services",
+    "description": "Denies Key Vault, SQL Server, and Storage accounts with public network access enabled. All PaaS access must go through private endpoints.",
+    "mode": "Indexed",
+    "metadata": { "version": "1.0.0", "category": "Network" },
+    "parameters": {},
+    "policyRule": {
+      "if": {
+        "anyOf": [
+          {
+            "allOf": [
+              { "field": "type", "equals": "Microsoft.KeyVault/vaults" },
+              { "field": "Microsoft.KeyVault/vaults/publicNetworkAccess", "equals": "Enabled" }
+            ]
+          },
+          {
+            "allOf": [
+              { "field": "type", "equals": "Microsoft.Sql/servers" },
+              { "field": "Microsoft.Sql/servers/publicNetworkAccess", "equals": "Enabled" }
+            ]
+          },
+          {
+            "allOf": [
+              { "field": "type", "equals": "Microsoft.Storage/storageAccounts" },
+              { "field": "Microsoft.Storage/storageAccounts/publicNetworkAccess", "equals": "Enabled" }
+            ]
+          }
+        ]
+      },
+      "then": { "effect": "Deny" }
+    }
+  }
+}

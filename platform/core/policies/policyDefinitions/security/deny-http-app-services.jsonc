@@ -1,0 +1,19 @@
+{
+  "name": "contoso-deny-http-app-services",
+  "properties": {
+    "displayName": "Deny — HTTP on App Services",
+    "description": "Denies App Services and Function Apps that do not enforce HTTPS-only traffic.",
+    "mode": "Indexed",
+    "metadata": { "version": "1.0.0", "category": "App Service" },
+    "parameters": {},
+    "policyRule": {
+      "if": {
+        "allOf": [
+          { "field": "type", "in": ["Microsoft.Web/sites", "Microsoft.Web/sites/slots"] },
+          { "field": "Microsoft.Web/sites/httpsOnly", "equals": false }
+        ]
+      },
+      "then": { "effect": "Deny" }
+    }
+  }
+}

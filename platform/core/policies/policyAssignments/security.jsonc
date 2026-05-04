@@ -10,12 +10,12 @@
         ]
       },
       "assignment": {
-        "name": "lz-deny-public-ip",
-        "displayName": "Landing Zones — Deny public IP addresses",
-        "description": "Prevents direct internet exposure in landing zone subscriptions"
+        "name": "lz-security-baseline",
+        "displayName": "Landing Zones — Security baseline",
+        "description": "Network hardening, encryption, and PaaS access controls for landing zone subscriptions"
       },
       "definitionEntry": {
-        "policyName": "contoso-deny-public-ip"
+        "policySetName": "contoso-security"
       },
       "enforcementMode": "Default"
     },
@@ -27,12 +27,12 @@
         ]
       },
       "assignment": {
-        "name": "platform-deny-public-ip",
-        "displayName": "Platform — Deny public IP addresses",
-        "description": "Prevents direct internet exposure in platform subscriptions"
+        "name": "platform-security-baseline",
+        "displayName": "Platform — Security baseline",
+        "description": "Network hardening, encryption, and PaaS access controls for platform subscriptions"
       },
       "definitionEntry": {
-        "policyName": "contoso-deny-public-ip"
+        "policySetName": "contoso-security"
       },
       "enforcementMode": "Default"
     }
