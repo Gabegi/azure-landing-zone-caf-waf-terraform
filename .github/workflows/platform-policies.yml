@@ -73,6 +73,13 @@ jobs:
           $files | ForEach-Object { Write-Host $_.FullName }
           echo "has-changes=$exists" >> $env:GITHUB_OUTPUT
 
+      - name: Debug outputs
+        shell: pwsh
+        run: |
+          Write-Host "has-changes: ${{ steps.plan-check.outputs.has-changes }}"
+          Write-Host "event_name:  ${{ github.event_name }}"
+          Write-Host "ref:         ${{ github.ref }}"
+
       - name: Upload plan
         if: steps.plan-check.outputs.has-changes == 'True'
         uses: actions/upload-artifact@v4
@@ -90,7 +97,12 @@ jobs:
     needs: plan
     runs-on: [self-hosted]
     environment: production
-    if: needs.plan.outputs.has-changes == 'True' && (github.event_name == 'workflow_dispatch' || (github.ref == 'refs/heads/main' && github.event_name == 'push'))
+    if: |
+      needs.plan.outputs.has-changes == 'True' &&
+      (
+        github.event_name == 'workflow_dispatch' ||
+        (github.ref == 'refs/heads/main' && github.event_name == 'push')
+      )
 
     env:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
