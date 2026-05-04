@@ -27,7 +27,7 @@
         ]
       },
       "assignment": {
-        "name": "platform-security-baseline",
+        "name": "platform-sec-baseline",
         "displayName": "Platform — Security baseline",
         "description": "Network hardening, encryption, and PaaS access controls for platform subscriptions"
       },
