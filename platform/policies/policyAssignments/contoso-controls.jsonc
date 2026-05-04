@@ -1,0 +1,30 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/enterprise-azure-policy-as-code/main/Schemas/policy-assignment-schema.json",
+  "nodeName": "/contoso-controls/",
+  "scope": {
+    "tenant01": [
+      "/providers/Microsoft.Management/managementGroups/contoso"
+    ]
+  },
+  "notScope": {
+    "tenant01": [
+      "/providers/Microsoft.Management/managementGroups/contoso-sandbox"
+    ]
+  },
+  "assignment": {
+    "name": "contoso-gov-controls",
+    "displayName": "Contoso Governance — Controls",
+    "description": "Deny classic resources and unapproved resource types — excludes sandbox"
+  },
+  "definitionEntry": {
+    "policySetName": "contoso-controls"
+  },
+  "parameters": {
+    "notAllowedResourceTypes": [
+      "Microsoft.ClassicCompute/virtualMachines",
+      "Microsoft.ClassicStorage/storageAccounts",
+      "Microsoft.ClassicNetwork/virtualNetworks"
+    ]
+  },
+  "enforcementMode": "Default"
+}
