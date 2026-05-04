@@ -1,12 +1,16 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/enterprise-azure-policy-as-code/main/Schemas/global-settings-schema.json",
-  "pacOwnerId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890", // replace with your own generated GUID
+  "pacOwnerId": "your-generated-guid", // replace with: New-Guid in PowerShell
   "pacEnvironments": [
     {
       "pacSelector": "tenant01",
+      "cloud": "AzureCloud",
+      "tenantId": "your-tenant-id",
       "deploymentRootScope": "/providers/Microsoft.Management/managementGroups/contoso",
-      "managedIdentityLocation": "eastus",
-      "tenantId": "your-tenant-id"
+      "desiredState": {
+        "strategy": "full"
+      },
+      "managedIdentityLocation": "eastus"
     }
   ]
 }
