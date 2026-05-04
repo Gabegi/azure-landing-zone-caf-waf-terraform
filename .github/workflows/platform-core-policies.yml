@@ -160,6 +160,5 @@ jobs:
         env:
           AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         run: |
-          Start-AzPolicyComplianceScan `
-            -SubscriptionId $env:AZURE_SUBSCRIPTION_ID `
-            -AsJob
+          Set-AzContext -SubscriptionId $env:AZURE_SUBSCRIPTION_ID
+          Start-AzPolicyComplianceScan -AsJob
