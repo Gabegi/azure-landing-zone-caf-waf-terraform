@@ -1,0 +1,29 @@
+{
+  "name": "contoso-audit-resource-locks",
+  "properties": {
+    "displayName": "Audit — Missing resource locks on resource groups",
+    "description": "Audits resource groups that have no CanNotDelete or ReadOnly lock. Apply to critical scopes to detect unprotected resources.",
+    "mode": "All",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "General"
+    },
+    "parameters": {},
+    "policyRule": {
+      "if": {
+        "field": "type",
+        "equals": "Microsoft.Resources/subscriptions/resourceGroups"
+      },
+      "then": {
+        "effect": "AuditIfNotExists",
+        "details": {
+          "type": "Microsoft.Authorization/locks",
+          "existenceCondition": {
+            "field": "Microsoft.Authorization/locks/level",
+            "in": ["CanNotDelete", "ReadOnly"]
+          }
+        }
+      }
+    }
+  }
+}
