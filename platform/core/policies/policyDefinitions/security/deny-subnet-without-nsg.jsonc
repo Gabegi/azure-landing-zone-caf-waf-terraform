@@ -1,0 +1,19 @@
+{
+  "name": "contoso-deny-subnet-without-nsg",
+  "properties": {
+    "displayName": "Deny — Subnets without NSG",
+    "description": "Denies creation of subnets that do not have a network security group attached.",
+    "mode": "All",
+    "metadata": { "version": "1.0.0", "category": "Network" },
+    "parameters": {},
+    "policyRule": {
+      "if": {
+        "allOf": [
+          { "field": "type", "equals": "Microsoft.Network/virtualNetworks/subnets" },
+          { "field": "Microsoft.Network/virtualNetworks/subnets/networkSecurityGroup.id", "exists": false }
+        ]
+      },
+      "then": { "effect": "Deny" }
+    }
+  }
+}
