@@ -107,7 +107,7 @@ jobs:
     env:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       EPAC_PAC_OWNER_ID: ${{ secrets.EPAC_PAC_OWNER_ID }}
-      RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     defaults:
       run:
@@ -157,7 +157,9 @@ jobs:
       # newly deployed policies immediately rather than waiting for the next cycle.
       - name: Trigger compliance scan
         shell: pwsh
+        env:
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         run: |
           Start-AzPolicyComplianceScan `
-            -ResourceGroupName $env:RESOURCE_GROUP `
+            -SubscriptionId $env:AZURE_SUBSCRIPTION_ID `
             -AsJob
