@@ -67,7 +67,10 @@ jobs:
         id: plan-check
         shell: pwsh
         run: |
-          $exists = Test-Path "./Output/policy-plan.json"
+          $files = Get-ChildItem "./Output" -Recurse -File -ErrorAction SilentlyContinue
+          $exists = $files.Count -gt 0
+          Write-Host "Plan files found: $($files.Count)"
+          $files | ForEach-Object { Write-Host $_.FullName }
           echo "has-changes=$exists" >> $env:GITHUB_OUTPUT
 
       - name: Upload plan
