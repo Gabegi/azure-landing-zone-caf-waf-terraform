@@ -16,6 +16,8 @@ jobs:
   plan:
     runs-on: [self-hosted]
     environment: production
+    outputs:
+      has-changes: ${{ steps.plan-check.outputs.has-changes }}
 
     env:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -61,16 +63,15 @@ jobs:
             -outputFolder "./Output" `
             -pacEnvironment "tenant01"
 
-      - name: Debug output folder
+      - name: Check if plan exists
+        id: plan-check
         shell: pwsh
         run: |
-          if (Test-Path "./Output") {
-            Get-ChildItem "./Output" -Recurse
-          } else {
-            Write-Host "Output folder does not exist"
-          }
+          $exists = Test-Path "./Output/policy-plan.json"
+          echo "has-changes=$exists" >> $env:GITHUB_OUTPUT
 
       - name: Upload plan
+        if: steps.plan-check.outputs.has-changes == 'True'
         uses: actions/upload-artifact@v4
         with:
           name: epac-plan
@@ -86,7 +87,7 @@ jobs:
     needs: plan
     runs-on: [self-hosted]
     environment: production
-    if: github.event_name == 'workflow_dispatch' || (github.ref == 'refs/heads/main' && github.event_name == 'push')
+    if: needs.plan.outputs.has-changes == 'True' && (github.event_name == 'workflow_dispatch' || (github.ref == 'refs/heads/main' && github.event_name == 'push'))
 
     env:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -118,16 +119,8 @@ jobs:
         shell: pwsh
         run: Connect-AzAccount -TenantId $env:AZURE_TENANT_ID -Identity
 
-      - name: Check if plan exists
-        id: plan-check
-        shell: pwsh
-        run: |
-          $exists = Test-Path "./Output/policy-plan.json"
-          echo "has-changes=$exists" >> $env:GITHUB_OUTPUT
-
       # Pushes policy definitions, initiatives, and assignments to Azure.
       - name: Deploy policy plan
-        if: steps.plan-check.outputs.has-changes == 'True'
         shell: pwsh
         run: |
           Deploy-PolicyPlan `
@@ -138,7 +131,6 @@ jobs:
       # Assigns Contributor to the managed identity used by Modify policies
       # so Azure can automatically write tags on non-compliant resources.
       - name: Deploy roles plan
-        if: steps.plan-check.outputs.has-changes == 'True'
         shell: pwsh
         run: |
           Deploy-RolesPlan `
@@ -149,7 +141,6 @@ jobs:
       # Triggers a compliance scan so Azure evaluates all resources against the
       # newly deployed policies immediately rather than waiting for the next cycle.
       - name: Trigger compliance scan
-        if: steps.plan-check.outputs.has-changes == 'True'
         shell: pwsh
         run: |
           Start-AzPolicyComplianceScan `
