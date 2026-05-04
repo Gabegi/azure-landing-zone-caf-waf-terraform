@@ -30,7 +30,12 @@ jobs:
 
       - name: Login to Azure
         shell: pwsh
-        run: Connect-AzAccount -TenantId $env:AZURE_TENANT_ID -Identity
+        run: |
+          Connect-AzAccount -TenantId $env:AZURE_TENANT_ID -Identity
+          $ctx = Get-AzContext
+          Write-Host "::add-mask::$($ctx.Account.Id)"
+          Write-Host "::add-mask::$env:AZURE_TENANT_ID"
+          Write-Host "::add-mask::$env:EPAC_PAC_OWNER_ID"
 
       # Injects tenant ID and pacOwnerId from GitHub secrets into global-settings.jsonc
       # at runtime so neither value is hardcoded in the repo.
