@@ -153,30 +153,18 @@ jobs:
             -definitionsRootFolder "." `
             -pacEnvironment "tenant01"
 
-      # Lists all policy assignments directly deployed at each MG in the hierarchy.
+      # Lists all policy assignments across the Contoso hierarchy grouped by MG.
       - name: List deployed policy assignments
         shell: pwsh
         run: |
-          $scopes = @(
-            "/providers/Microsoft.Management/managementGroups/contoso",
-            "/providers/Microsoft.Management/managementGroups/contoso-platform",
-            "/providers/Microsoft.Management/managementGroups/contoso-workloads",
-            "/providers/Microsoft.Management/managementGroups/contoso-sandbox",
-            "/providers/Microsoft.Management/managementGroups/contoso-decommissioned",
-            "/providers/Microsoft.Management/managementGroups/contoso-connectivity",
-            "/providers/Microsoft.Management/managementGroups/contoso-management",
-            "/providers/Microsoft.Management/managementGroups/contoso-identity",
-            "/providers/Microsoft.Management/managementGroups/contoso-security"
-          )
-          foreach ($scope in $scopes) {
-            $mgName = $scope.Split("/")[-1]
-            $assignments = Get-AzPolicyAssignment -Scope $scope -WarningAction SilentlyContinue |
-              Where-Object { $_.Properties.Scope -like "*$mgName*" }
-            if ($assignments) {
-              Write-Host "`n── $mgName"
-              $assignments | ForEach-Object {
-                Write-Host "   $($_.Name)  |  $($_.Properties.DisplayName)  |  [$($_.Properties.EnforcementMode)]"
-              }
+          $root = "/providers/Microsoft.Management/managementGroups/contoso"
+          $all = Get-AzPolicyAssignment -Scope $root -WarningAction SilentlyContinue
+          $grouped = $all | Group-Object { $_.Properties.Scope }
+          foreach ($group in $grouped | Sort-Object Name) {
+            $mgName = $group.Name.Split("/")[-1]
+            Write-Host "`n── $mgName"
+            foreach ($a in $group.Group) {
+              Write-Host "   $($a.Name)  |  $($a.Properties.DisplayName)  |  [$($a.Properties.EnforcementMode)]"
             }
           }
 
