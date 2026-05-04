@@ -75,7 +75,7 @@ jobs:
         with:
           name: epac-plan
           path: platform/policies/Output
-          if-no-files-found: error
+          if-no-files-found: ignore
           retention-days: 1
 
   # ─── JOB 2: DEPLOY ────────────────────────────────────────────────────────
@@ -118,8 +118,16 @@ jobs:
         shell: pwsh
         run: Connect-AzAccount -TenantId $env:AZURE_TENANT_ID -Identity
 
+      - name: Check if plan exists
+        id: plan-check
+        shell: pwsh
+        run: |
+          $exists = Test-Path "./Output/policy-plan.json"
+          echo "has-changes=$exists" >> $env:GITHUB_OUTPUT
+
       # Pushes policy definitions, initiatives, and assignments to Azure.
       - name: Deploy policy plan
+        if: steps.plan-check.outputs.has-changes == 'True'
         shell: pwsh
         run: |
           Deploy-PolicyPlan `
@@ -130,6 +138,7 @@ jobs:
       # Assigns Contributor to the managed identity used by Modify policies
       # so Azure can automatically write tags on non-compliant resources.
       - name: Deploy roles plan
+        if: steps.plan-check.outputs.has-changes == 'True'
         shell: pwsh
         run: |
           Deploy-RolesPlan `
@@ -140,6 +149,7 @@ jobs:
       # Triggers a compliance scan so Azure evaluates all resources against the
       # newly deployed policies immediately rather than waiting for the next cycle.
       - name: Trigger compliance scan
+        if: steps.plan-check.outputs.has-changes == 'True'
         shell: pwsh
         run: |
           Start-AzPolicyComplianceScan `
