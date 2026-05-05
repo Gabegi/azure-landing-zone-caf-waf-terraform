@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36">
   <diagram name="Page-1" id="f59JwgEBT4WkOdATAucS">
-    <mxGraphModel dx="2687" dy="2209" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" background="#FFFFFF" math="0" shadow="0">
+    <mxGraphModel dx="2391" dy="1876" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -539,8 +539,14 @@
         <mxCell id="1HnUZULJH6qKbrMNfr2n-40" edge="1" parent="1" source="1HnUZULJH6qKbrMNfr2n-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="1HnUZULJH6qKbrMNfr2n-37">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+        <mxCell id="1HnUZULJH6qKbrMNfr2n-44" edge="1" parent="1" source="1HnUZULJH6qKbrMNfr2n-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="1HnUZULJH6qKbrMNfr2n-43">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
         <mxCell id="1HnUZULJH6qKbrMNfr2n-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#66B2FF;" value="management" vertex="1">
           <mxGeometry height="60" width="120" x="-921" y="2235" as="geometry" />
+        </mxCell>
+        <mxCell id="1HnUZULJH6qKbrMNfr2n-46" edge="1" parent="1" source="1HnUZULJH6qKbrMNfr2n-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="1HnUZULJH6qKbrMNfr2n-45">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="1HnUZULJH6qKbrMNfr2n-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#66B2FF;" value="security" vertex="1">
           <mxGeometry height="60" width="120" x="-327" y="2235" as="geometry" />
@@ -635,13 +641,19 @@
           <mxGeometry height="60" width="120" x="-1003" y="2457" as="geometry" />
         </mxCell>
         <mxCell id="1HnUZULJH6qKbrMNfr2n-37" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#66B2FF;" value="Defender for Cloud" vertex="1">
-          <mxGeometry height="60" width="120" x="-437.5" y="2535" as="geometry" />
+          <mxGeometry height="60" width="120" x="-460" y="2375" as="geometry" />
         </mxCell>
         <mxCell id="1HnUZULJH6qKbrMNfr2n-38" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#66B2FF;" value="Sentinel" vertex="1">
-          <mxGeometry height="60" width="120" x="-437.5" y="2638" as="geometry" />
+          <mxGeometry height="60" width="120" x="-460" y="2463" as="geometry" />
         </mxCell>
         <mxCell id="1HnUZULJH6qKbrMNfr2n-41" edge="1" parent="1" source="1HnUZULJH6qKbrMNfr2n-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1.002;entryY=0.611;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="1HnUZULJH6qKbrMNfr2n-38">
           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1HnUZULJH6qKbrMNfr2n-43" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#66B2FF;" value="&lt;div&gt;Network Watcher&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="-1003" y="2544" as="geometry" />
+        </mxCell>
+        <mxCell id="1HnUZULJH6qKbrMNfr2n-45" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#66B2FF;" value="Key Vault" vertex="1">
+          <mxGeometry height="60" width="120" x="-460" y="2554" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
