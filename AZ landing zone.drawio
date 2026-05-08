@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36">
   <diagram name="Page-1" id="f59JwgEBT4WkOdATAucS">
-    <mxGraphModel dx="3353" dy="1877" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" background="#FFFFFF" math="0" shadow="0">
+    <mxGraphModel dx="2206" dy="1839" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -702,6 +702,9 @@
         <mxCell id="Rj0-9NlWFA_kgrKa7wK0-17" edge="1" parent="1" source="Rj0-9NlWFA_kgrKa7wK0-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="Rj0-9NlWFA_kgrKa7wK0-16" value="">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+        <mxCell id="XakHqx4SiVY3b09vNLK7-3" edge="1" parent="1" source="Rj0-9NlWFA_kgrKa7wK0-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="XakHqx4SiVY3b09vNLK7-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
         <mxCell id="Rj0-9NlWFA_kgrKa7wK0-14" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF6666;" value="applz_resourcegroups" vertex="1">
           <mxGeometry height="60" width="120" x="-906" y="3079" as="geometry" />
         </mxCell>
@@ -725,6 +728,9 @@
         </mxCell>
         <mxCell id="Rj0-9NlWFA_kgrKa7wK0-22" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF6666;" value="applz_devops" vertex="1">
           <mxGeometry height="60" width="120" x="-106" y="3079" as="geometry" />
+        </mxCell>
+        <mxCell id="XakHqx4SiVY3b09vNLK7-1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF6666;" value="rg-network (sbunets)" vertex="1">
+          <mxGeometry height="60" width="120" x="-795" y="2945" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
